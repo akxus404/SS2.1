@@ -22,11 +22,21 @@ else()
   set(SS_SODIUM_TARGET unofficial-sodium::sodium)
 endif()
 
+# Avoid MSVC's most-vexing parse for vector(size_t(expr)): generate Vault.cpp with
+# an unambiguous size/value constructor. This also prevents cascading bogus
+# errors in the subsequent read/hash/AEAD calls.
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/src/Vault.cpp" SS_VAULT_CPP)
+string(REPLACE
+  "std::vector<unsigned char> plain(std::size_t(kChunk));"
+  "std::vector<unsigned char> plain(static_cast<std::size_t>(kChunk), 0);"
+  SS_VAULT_CPP "${SS_VAULT_CPP}")
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/Vault.cpp" "${SS_VAULT_CPP}")
+
 add_executable(SecureSpace WIN32 MACOSX_BUNDLE
   src/main.cpp
   src/Theme.cpp
   src/Platform.cpp
-  src/Vault.cpp
+  "${CMAKE_CURRENT_BINARY_DIR}/Vault.cpp"
   src/AuthDialogs.cpp
   src/MainWindow.cpp
   src/SettingsDialog.cpp
