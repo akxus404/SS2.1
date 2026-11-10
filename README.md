@@ -1,4 +1,4 @@
-# Secure Space (SS) 0.2
+# Secure Space (SS) 2.1
 
 Bóveda de archivos cifrada en C++17 (Qt 6 + libsodium). Lo que entra se guarda cifrado con nombres aleatorios,
 se puede **usar dentro de SS** (editar texto, ver imágenes, reproducir audio y vídeo) sin dejar copias
